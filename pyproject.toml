@@ -1,0 +1,35 @@
+[project]
+name = "habit-tracker"
+version = "0.1.0"
+description = "A habit tracking API built with FastAPI"
+requires-python = ">=3.9"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "sqlalchemy[asyncio]>=2.0",
+    "aiosqlite>=0.20",
+    "alembic>=1.13",
+    "pydantic-settings>=2.5",
+    "passlib[argon2]>=1.7",
+    "pyjwt>=2.9",
+    "email-validator>=2.2",
+    "apscheduler>=3.10",
+    "slowapi>=0.1.9",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+    "httpx>=0.27",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/habit_tracker"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"

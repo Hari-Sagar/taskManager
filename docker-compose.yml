@@ -1,0 +1,22 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - habit_tracker_data:/data
+    environment:
+      HABIT_TRACKER_DATABASE_URL: sqlite+aiosqlite:////data/habit_tracker.db
+      HABIT_TRACKER_JWT_SECRET_KEY: ${JWT_SECRET_KEY:?set a real random secret — do not use the code default in production}
+      HABIT_TRACKER_SMTP_HOST: ${SMTP_HOST:-localhost}
+      HABIT_TRACKER_SMTP_PORT: ${SMTP_PORT:-587}
+      HABIT_TRACKER_SMTP_USERNAME: ${SMTP_USERNAME:-}
+      HABIT_TRACKER_SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      HABIT_TRACKER_SMTP_FROM_ADDRESS: ${SMTP_FROM_ADDRESS:-habit-tracker@example.com}
+      HABIT_TRACKER_CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-}
+    restart: unless-stopped
+
+volumes:
+  # Named volume, not a bind mount — survives `docker compose down` (only
+  # `down -v` removes it) and container recreation either way.
+  habit_tracker_data:
