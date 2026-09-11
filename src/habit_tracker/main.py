@@ -50,7 +50,7 @@ _REDOC_HTML = """<!DOCTYPE html>
   </head>
   <body>
     <div id="redoc-container"></div>
-    <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/redoc@2/bundles/redoc.standalone.js"></script>
     <script>
       Redoc.init('{openapi_url}', {{
         theme: {{
