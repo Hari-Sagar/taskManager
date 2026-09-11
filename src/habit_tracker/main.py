@@ -25,6 +25,14 @@ app = FastAPI(
     description="Create habits, check in daily, and track streaks.",
     version="0.1.0",
     openapi_tags=tags_metadata,
+    swagger_ui_parameters={
+        # Collapses the auto-generated "Schemas" section at the bottom of
+        # /docs (every Pydantic model listed out) — it's a raw dump of
+        # internal types, not something someone using the API needs open
+        # by default. Still reachable by clicking it, just not sprawling
+        # across the page on load.
+        "defaultModelsExpandDepth": -1,
+    },
 )
 
 app.state.limiter = limiter
