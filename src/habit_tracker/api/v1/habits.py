@@ -20,6 +20,8 @@ async def create_habit(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_db),
 ):
+    """Create a habit with its initial schedule (daily, specific weekdays,
+    or N times per week). Starts at a streak of 0."""
     return await habits_service.create_habit(session, current_user, body)
 
 
@@ -29,6 +31,8 @@ async def list_habits(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_db),
 ):
+    """List your habits. Archived (soft-deleted) ones are excluded unless
+    `include_archived=true`."""
     return await habits_service.list_habits(session, current_user, include_archived)
 
 
@@ -38,6 +42,7 @@ async def get_habit(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_db),
 ):
+    """Fetch a single habit, including its current/longest streak."""
     try:
         return await habits_service.get_owned_habit(session, current_user, habit_id)
     except habits_service.HabitNotFound:
@@ -50,6 +55,7 @@ async def get_habit_stats(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_db),
 ):
+    """Just the streak numbers, if you don't need the rest of the habit."""
     try:
         habit = await habits_service.get_owned_habit(session, current_user, habit_id)
     except habits_service.HabitNotFound:
@@ -64,6 +70,9 @@ async def update_habit(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_db),
 ):
+    """Update a habit's name/description/target, or change its schedule.
+    A frequency change doesn't rewrite history — it takes effect from
+    today onward, so past streak calculations stay correct."""
     try:
         return await habits_service.update_habit(session, current_user, habit_id, body)
     except habits_service.HabitNotFound:
@@ -76,6 +85,8 @@ async def delete_habit(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_db),
 ):
+    """Archive a habit (soft delete). Its streak freezes and it drops out
+    of the default habit list, but its history is kept — see `restore`."""
     try:
         await habits_service.archive_habit(session, current_user, habit_id)
     except habits_service.HabitNotFound:
@@ -88,6 +99,7 @@ async def restore_habit(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_db),
 ):
+    """Undo archiving a habit — it reappears in your habit list."""
     try:
         return await habits_service.restore_habit(session, current_user, habit_id)
     except habits_service.HabitNotFound:

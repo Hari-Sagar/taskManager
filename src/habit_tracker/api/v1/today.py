@@ -15,4 +15,6 @@ async def get_today(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_db),
 ):
+    """Everything due today, with its status (done/skipped/pending) and
+    current streak — the "home screen" view."""
     return await today_service.get_today(session, current_user)

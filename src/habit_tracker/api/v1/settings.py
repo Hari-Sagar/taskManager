@@ -15,6 +15,7 @@ async def get_settings(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_db),
 ):
+    """Your timezone, day-start hour, and notification preferences."""
     return await settings_service.get_settings(session, current_user)
 
 
@@ -24,4 +25,7 @@ async def update_settings(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_db),
 ):
+    """Update any subset of your settings — only the fields you send are
+    changed. `day_start_hour` shifts when "today" rolls over (e.g. 3 means
+    a 2am check-in still counts as yesterday)."""
     return await settings_service.update_settings(session, current_user, body)

@@ -20,6 +20,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def register(body: RegisterRequest, session: AsyncSession = Depends(get_db)):
+    """Create an account. Doesn't log you in — call /login next."""
     try:
         user = await auth_service.register_user(session, body.email, body.password)
     except auth_service.EmailAlreadyRegistered:
@@ -30,6 +31,8 @@ async def register(body: RegisterRequest, session: AsyncSession = Depends(get_db
 @router.post("/login", response_model=TokenPairResponse)
 @limiter.limit("10/minute")
 async def login(request: Request, body: LoginRequest, session: AsyncSession = Depends(get_db)):
+    """Get an access token (short-lived, use it via "Authorize" above)
+    and a refresh token (longer-lived, use it with /refresh)."""
     try:
         user = await auth_service.authenticate_user(session, body.email, body.password)
     except auth_service.InvalidCredentials:
@@ -41,6 +44,8 @@ async def login(request: Request, body: LoginRequest, session: AsyncSession = De
 
 @router.post("/refresh", response_model=TokenPairResponse)
 async def refresh(body: RefreshRequest, session: AsyncSession = Depends(get_db)):
+    """Trade a refresh token for a new access+refresh pair. The old
+    refresh token stops working immediately (rotation)."""
     try:
         access_token, refresh_token = await auth_service.refresh_token_pair(session, body.refresh_token)
     except auth_service.InvalidRefreshToken:
@@ -50,6 +55,7 @@ async def refresh(body: RefreshRequest, session: AsyncSession = Depends(get_db))
 
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
 async def logout(body: LogoutRequest, session: AsyncSession = Depends(get_db)):
+    """Revoke a refresh token, ending that session."""
     try:
         await auth_service.revoke_refresh_token(session, body.refresh_token)
     except auth_service.InvalidRefreshToken:
@@ -58,6 +64,5 @@ async def logout(body: LogoutRequest, session: AsyncSession = Depends(get_db)):
 
 @router.get("/me", response_model=UserResponse)
 async def me(current_user: User = Depends(get_current_user)):
-    """Protected placeholder route — proves get_current_user works end to
-    end (PLAN.md Phase 2 item 4)."""
+    """Who am I — useful to confirm your token works."""
     return current_user

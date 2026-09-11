@@ -1,9 +1,15 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, Field, model_validator
 
 from habit_tracker.models.habit_schedule import FrequencyType
+
+_FREQUENCY_CONFIG_DESCRIPTION = (
+    "Shape depends on frequency_type: `{}` for daily; "
+    '`{"days": [0-6]}` (0=Monday) for weekly_days; '
+    '`{"target": N}` for times_per_week.'
+)
 
 
 class HabitCreate(BaseModel):
@@ -12,7 +18,10 @@ class HabitCreate(BaseModel):
     unit: Optional[str] = None
     target_value: Optional[float] = None
     frequency_type: FrequencyType
-    frequency_config: dict
+    frequency_config: dict = Field(
+        examples=[{}, {"days": [0, 2, 4]}, {"target": 3}],
+        description=_FREQUENCY_CONFIG_DESCRIPTION,
+    )
 
 
 class HabitUpdate(BaseModel):
@@ -21,7 +30,11 @@ class HabitUpdate(BaseModel):
     unit: Optional[str] = None
     target_value: Optional[float] = None
     frequency_type: Optional[FrequencyType] = None
-    frequency_config: Optional[dict] = None
+    frequency_config: Optional[dict] = Field(
+        default=None,
+        examples=[{}, {"days": [0, 2, 4]}, {"target": 3}],
+        description=_FREQUENCY_CONFIG_DESCRIPTION + " Must be provided together with frequency_type.",
+    )
 
     @model_validator(mode="after")
     def frequency_fields_come_together(self):

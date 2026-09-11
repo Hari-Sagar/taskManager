@@ -27,6 +27,9 @@ async def create_entry(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_db),
 ):
+    """Check in for a habit — defaults to today if `local_date` is
+    omitted, or backfill a past date. One entry per habit per day; use
+    PATCH to change an existing one instead of creating a duplicate."""
     try:
         return await entries_service.create_entry(session, current_user, habit_id, body)
     except habits_service.HabitNotFound:
@@ -46,6 +49,8 @@ async def update_entry(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_db),
 ):
+    """Correct a past check-in (e.g. mark it skipped instead of done, or
+    fix a logged value). Recalculates the habit's streak."""
     try:
         return await entries_service.update_entry(session, current_user, habit_id, local_date, body)
     except habits_service.HabitNotFound:
@@ -61,6 +66,7 @@ async def delete_entry(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_db),
 ):
+    """Undo a check-in for a given date. Recalculates the habit's streak."""
     try:
         await entries_service.delete_entry(session, current_user, habit_id, local_date)
     except habits_service.HabitNotFound:
