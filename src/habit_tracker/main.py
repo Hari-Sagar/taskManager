@@ -50,11 +50,14 @@ _REDOC_HTML = """<!DOCTYPE html>
       body {{ margin: 0; padding: 0; }}
       /* ReDoc's syntax highlighter uses colors meant for a dark
          background; force plain, readable dark text now that the panel
-         itself is light — overriding individual token colors rather
-         than keeping multi-color syntax highlighting. */
+         itself is light. ReDoc is built with styled-components, so the
+         actual highlighted spans have auto-generated hashed class names
+         (not semantic ones like .token) — targeting every descendant
+         with `*` instead of guessing a specific class name. */
       #redoc-container pre,
+      #redoc-container pre *,
       #redoc-container code,
-      #redoc-container .token {{
+      #redoc-container code * {{
         color: #1a1a1a !important;
       }}
     </style>
