@@ -26,69 +26,36 @@ app = FastAPI(
     description="Create habits, check in daily, and track streaks.",
     version="0.1.0",
     openapi_tags=tags_metadata,
-    swagger_ui_parameters={
-        # Collapses the auto-generated "Schemas" section at the bottom of
-        # /docs (every Pydantic model listed out) — it's a raw dump of
-        # internal types, not something someone using the API needs open
-        # by default. Still reachable by clicking it, just not sprawling
-        # across the page on load.
-        "defaultModelsExpandDepth": -1,
-    },
-    # Custom /redoc below (theme doesn't match by default) replaces the
-    # built-in one.
+    # Both the default Swagger UI and the earlier separate ReDoc page are
+    # replaced below by a single page at /docs (Scalar) — a modern look
+    # like ReDoc's, but still fully interactive ("Try it out"), which
+    # ReDoc can't do (it's read-only reference docs by design).
+    docs_url=None,
     redoc_url=None,
 )
 
 
-_REDOC_HTML = """<!DOCTYPE html>
+_SCALAR_HTML = """<!DOCTYPE html>
 <html>
   <head>
     <title>Habit Tracker API</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-      body {{ margin: 0; padding: 0; }}
-      /* ReDoc's syntax highlighter uses colors meant for a dark
-         background; force plain, readable dark text now that the panel
-         itself is light. ReDoc is built with styled-components, so the
-         actual highlighted spans have auto-generated hashed class names
-         (not semantic ones like .token) — targeting every descendant
-         with `*` instead of guessing a specific class name. */
-      #redoc-container pre,
-      #redoc-container pre *,
-      #redoc-container code,
-      #redoc-container code * {{
-        color: #1a1a1a !important;
-      }}
-    </style>
   </head>
   <body>
-    <div id="redoc-container"></div>
-    <script src="https://cdn.jsdelivr.net/npm/redoc@2/bundles/redoc.standalone.js"></script>
-    <script>
-      Redoc.init('{openapi_url}', {{
-        theme: {{
-          rightPanel: {{
-            backgroundColor: '#f7f7f8',
-            textColor: '#1a1a1a',
-          }},
-          codeBlock: {{
-            backgroundColor: '#eef0f2',
-          }},
-        }},
-      }}, document.getElementById('redoc-container'));
-    </script>
+    <script id="api-reference" data-url="{openapi_url}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
   </body>
 </html>
 """
 
 
-@app.get("/redoc", include_in_schema=False)
-def redoc() -> HTMLResponse:
-    """Same content as Swagger, laid out as reference docs — the right-
-    hand code-sample panel is themed to match the rest of the page
-    instead of ReDoc's default dark navy box."""
-    return HTMLResponse(_REDOC_HTML.format(openapi_url=app.openapi_url))
+@app.get("/docs", include_in_schema=False)
+def docs() -> HTMLResponse:
+    """The one interactive API reference page — register, get a token,
+    authorize, and call every endpoint from here."""
+    return HTMLResponse(_SCALAR_HTML.format(openapi_url=app.openapi_url))
+
 
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
