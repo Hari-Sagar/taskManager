@@ -46,7 +46,18 @@ _REDOC_HTML = """<!DOCTYPE html>
     <title>Habit Tracker API</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>body {{ margin: 0; padding: 0; }}</style>
+    <style>
+      body {{ margin: 0; padding: 0; }}
+      /* ReDoc's syntax highlighter uses colors meant for a dark
+         background; force plain, readable dark text now that the panel
+         itself is light — overriding individual token colors rather
+         than keeping multi-color syntax highlighting. */
+      #redoc-container pre,
+      #redoc-container code,
+      #redoc-container .token {{
+        color: #1a1a1a !important;
+      }}
+    </style>
   </head>
   <body>
     <div id="redoc-container"></div>
