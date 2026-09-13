@@ -10,15 +10,17 @@ from habit_tracker.core.config import settings
 from habit_tracker.core.rate_limit import limiter
 
 # Order here is display order in the docs UI — grouped in the sequence
-# you'd actually use the API: register/log in, set up habits, check in,
-# check today's status, then the less-common settings/backup endpoints.
+# you'd actually use the API: create an account, set up habits, check in
+# day to day, then the less-common settings/backup endpoints. Plain,
+# self-explanatory names (not dev shorthand like "auth"/"entries") since
+# this is the first thing anyone new to the API sees.
 tags_metadata = [
-    {"name": "auth", "description": "Register, log in, and manage session tokens."},
-    {"name": "habits", "description": "Create and manage habits, including streak stats."},
-    {"name": "entries", "description": "Check in (or edit/undo a check-in) for a habit."},
-    {"name": "today", "description": "What's due today and its status, in one call."},
-    {"name": "settings", "description": "Timezone, day-boundary, and notification preferences."},
-    {"name": "export-import", "description": "Back up or restore your habits and history as JSON."},
+    {"name": "Account", "description": "Register, log in, and manage your session."},
+    {"name": "Habits", "description": "Create and manage the habits you're tracking."},
+    {"name": "Check-ins", "description": "Log (or edit/undo) a day's progress on a habit."},
+    {"name": "Today", "description": "Everything due today, and whether you've done it yet."},
+    {"name": "Settings", "description": "Your timezone, day-boundary, and reminder preferences."},
+    {"name": "Backup & Restore", "description": "Export your data, or restore it from a backup."},
 ]
 
 app = FastAPI(

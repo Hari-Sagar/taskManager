@@ -7,7 +7,7 @@ from habit_tracker.models.user import User
 from habit_tracker.schemas.settings import SettingsResponse, SettingsUpdate
 from habit_tracker.services import settings as settings_service
 
-router = APIRouter(prefix="/settings", tags=["settings"])
+router = APIRouter(prefix="/settings", tags=["Settings"])
 
 
 @router.get("", response_model=SettingsResponse)

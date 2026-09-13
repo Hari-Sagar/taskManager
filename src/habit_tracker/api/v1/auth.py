@@ -15,7 +15,7 @@ from habit_tracker.schemas.auth import (
 )
 from habit_tracker.services import auth as auth_service
 
-router = APIRouter(prefix="/auth", tags=["auth"])
+router = APIRouter(prefix="/auth", tags=["Account"])
 
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)

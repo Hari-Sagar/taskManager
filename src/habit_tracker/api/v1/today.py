@@ -7,7 +7,7 @@ from habit_tracker.models.user import User
 from habit_tracker.schemas.today import TodayItem
 from habit_tracker.services import today as today_service
 
-router = APIRouter(tags=["today"])
+router = APIRouter(tags=["Today"])
 
 
 @router.get("/today", response_model=list[TodayItem])

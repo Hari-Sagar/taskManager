@@ -7,7 +7,7 @@ from habit_tracker.models.user import User
 from habit_tracker.schemas.export_import import ExportPayload, ImportResult
 from habit_tracker.services import export_import as export_import_service
 
-router = APIRouter(tags=["export-import"])
+router = APIRouter(tags=["Backup & Restore"])
 
 
 @router.get("/export", response_model=ExportPayload)

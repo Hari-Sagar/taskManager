@@ -7,7 +7,7 @@ from habit_tracker.models.user import User
 from habit_tracker.schemas.habit import HabitCreate, HabitResponse, HabitStats, HabitUpdate
 from habit_tracker.services import habits as habits_service
 
-router = APIRouter(prefix="/habits", tags=["habits"])
+router = APIRouter(prefix="/habits", tags=["Habits"])
 
 
 def _not_found() -> HTTPException:

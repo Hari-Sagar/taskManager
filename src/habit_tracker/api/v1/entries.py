@@ -11,7 +11,7 @@ from habit_tracker.schemas.entry import EntryCreate, EntryResponse, EntryUpdate
 from habit_tracker.services import entries as entries_service
 from habit_tracker.services import habits as habits_service
 
-router = APIRouter(prefix="/habits/{habit_id}/entries", tags=["entries"])
+router = APIRouter(prefix="/habits/{habit_id}/entries", tags=["Check-ins"])
 
 
 def _not_found(detail: str) -> HTTPException:
