@@ -1,4 +1,4 @@
-from datetime import date, datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone
 
 from habit_tracker.models.entry import Entry, EntryStatus
 from habit_tracker.models.habit import Habit
@@ -6,7 +6,8 @@ from habit_tracker.models.habit_schedule import FrequencyType, HabitSchedule
 from habit_tracker.models.user import User
 from habit_tracker.services import streak as streak_module
 
-TODAY = date.today()
+# See test_streak_recompute.py — UTC, not local date.today().
+TODAY = datetime.now(timezone.utc).date()
 
 
 def _spy_on_recompute(monkeypatch):

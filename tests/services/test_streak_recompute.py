@@ -1,4 +1,4 @@
-from datetime import date, datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone
 
 from habit_tracker.models.entry import Entry, EntryStatus
 from habit_tracker.models.habit import Habit
@@ -6,7 +6,12 @@ from habit_tracker.models.habit_schedule import FrequencyType, HabitSchedule
 from habit_tracker.models.user import User
 from habit_tracker.services.streak import recompute
 
-TODAY = date.today()  # user.timezone="UTC", day_start_hour=0 in these tests, so local_today == date.today()
+# user.timezone="UTC", day_start_hour=0 in these tests, so this must be
+# actual UTC — not date.today()'s local system timezone, which disagrees
+# with UTC for several hours a day whenever the local machine isn't
+# itself on UTC (this bit us for real: these tests flaked exactly when
+# that mismatch window was hit).
+TODAY = datetime.now(timezone.utc).date()
 
 
 async def _make_user(db_session, email):

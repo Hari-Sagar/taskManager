@@ -1,4 +1,4 @@
-from datetime import date, datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone
 
 from habit_tracker.models.entry import Entry, EntryStatus
 from habit_tracker.models.habit import Habit
@@ -6,7 +6,10 @@ from habit_tracker.models.habit_schedule import FrequencyType, HabitSchedule
 from habit_tracker.models.user import User
 from habit_tracker.jobs.scheduler import run_nightly_reconciliation
 
-TODAY = date.today()
+# UTC, not local date.today() — matches local_today() for these
+# UTC-timezone test users regardless of the local machine's timezone or
+# time of day (they disagree for hours near midnight UTC otherwise).
+TODAY = datetime.now(timezone.utc).date()
 
 
 async def _make_user(db_session, email):

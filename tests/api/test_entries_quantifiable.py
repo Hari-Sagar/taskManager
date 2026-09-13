@@ -1,8 +1,3 @@
-from datetime import date, timedelta
-
-TODAY = date.today()
-
-
 async def test_below_target_is_stored_but_not_counted_as_done(client, register_and_login):
     headers = await register_and_login("quant-below@example.com")
     created = await client.post(

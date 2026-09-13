@@ -1,11 +1,13 @@
-from datetime import date, timedelta
+from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import select
 
 from habit_tracker.models.habit_schedule import HabitSchedule
 from habit_tracker.services import streak as streak_module
 
-TODAY = date.today()
+# See test_entries_update_delete.py — UTC, not local date.today(), to
+# match local_today() for these UTC-timezone test users.
+TODAY = datetime.now(timezone.utc).date()
 
 
 async def test_today_returns_due_habits_with_status_and_streak(client, register_and_login):

@@ -1,10 +1,15 @@
-from datetime import date, timedelta
+from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import select
 
 from habit_tracker.models.habit_schedule import HabitSchedule
 
-TODAY = date.today()
+# Test users below use timezone="UTC" — matching local_today() with the
+# actual UTC date (not date.today()'s local system timezone) keeps this
+# consistent regardless of what timezone this runs in or what time of
+# day it is (date.today() and UTC's date disagree for hours near
+# midnight UTC whenever the local machine isn't itself on UTC).
+TODAY = datetime.now(timezone.utc).date()
 
 
 async def _create_daily_habit(client, headers, db_session):

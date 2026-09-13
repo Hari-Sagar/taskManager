@@ -1,4 +1,4 @@
-from datetime import date, datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone
 from unittest.mock import AsyncMock
 
 from habit_tracker.models.entry import Entry, EntryStatus
@@ -9,7 +9,8 @@ from habit_tracker.models.user import User
 from habit_tracker.services import notifications as notifications_module
 from habit_tracker.services.notifications import get_pending_reminders
 
-TODAY = date.today()
+# See test_nightly_reconciliation.py — UTC, not local date.today().
+TODAY = datetime.now(timezone.utc).date()
 
 
 async def _make_user(db_session, email, notifications_enabled):
